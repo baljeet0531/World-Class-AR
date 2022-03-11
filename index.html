@@ -10,6 +10,79 @@
     <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
 
+    <script>
+        AFRAME.registerComponent('model-relative-opacity', {
+            schema: { opacityFactor: { default: 1.0 } },
+            init: function () {
+                this.nodeMap = {}
+                this.prepareMap.bind(this)
+                this.traverseMesh.bind(this)
+
+                this.el.addEventListener('model-loaded', e => {
+                    this.prepareMap()
+                    this.update()
+                });
+            },
+            prepareMap: function () {
+                this.traverseMesh(node => {
+                    this.nodeMap[node.uuid] = node.material.opacity
+                })
+            },
+            update: function () {
+                this.traverseMesh(node => {
+                    node.material.opacity = this.nodeMap[node.uuid] * this.data.opacityFactor
+                    node.material.transparent = node.material.opacity < 1.0; node.material.needsUpdate = true;
+                })
+            }, remove: function () {
+                this.traverseMesh(node => {
+                    node.material.opacity = this.nodeMap[node.uuid]
+                    node.material.transparent = node.material.opacity < 1.0; node.material.needsUpdate = true;
+                })
+            }, traverseMesh:
+                function (func) {
+                    var mesh = this.el.getObject3D('mesh'); if (!mesh) { return; } mesh.traverse(node => {
+                        if (node.isMesh) {
+                            func(node)
+                        }
+                    });
+                }
+        });
+    </script>
+    <script>
+        AFRAME.registerComponent('markerhandler', {
+            init: function () {
+                this.el.sceneEl.addEventListener('markerFound', () => {
+                    alert("marker found!!");
+                })
+            }
+        });
+    </script>
+    <!-- <script>
+        AFRAME.registerComponent('marsmodel', {
+            init: function () {
+                let img = document.querySelectorAll("a-image");
+
+                this.el.addEventListener('model-loaded', () => {
+                    for (i = 0; i < img.length; i++) {
+                        img[i].emit("mars-loaded");
+                    }
+                })
+            }
+        });
+    </script> -->
+    <script>
+        AFRAME.registerComponent('marsmodel', {
+            init: function () {
+                let img = document.querySelectorAll("a-image");
+
+                this.el.addEventListener('animationcomplete', () => {
+                    for (i = 0; i < img.length; i++) {
+                        img[i].setAttribute('visible', true);
+                    }
+                })
+            }
+        });
+    </script>
     <title>world class AR</title>
 </head>
 
@@ -17,16 +90,48 @@
 
 <body style='margin : 0px; overflow: hidden;'>
     <a-scene arjs embedded renderer="logarithmicDepthBuffer: true;" vr-mode-ui="enabled: false">
-        <a-marker-camera type='pattern' url='assets/pattern-marker.patt'>
+        <a-entity camera></a-entity>
+        <a-assets>
+            <img id="walker" src="assets/walker.png">
+        </a-assets>
+        <a-marker markerhandler type='pattern' url='assets/pattern-marker.patt'>
 
-            <a-entity gltf-model="url(assets/scene.gltf)" scale="0.5 0.5 0.5" position="0 -3 0"
-                animation="property: position; from:0 -3 0; to: 0 0 0;startEvents: model-loaded; dur:10000"
-                animation__2="property: rotation; to: 0 360 0; loop: true; dur: 1000; easing: linear">
+
+            <!-- mars -->
+            <a-entity marsmodel gltf-model="url(assets/scene.gltf)" scale="0.8 0.8 0.8" position="0 0 0"
+                model-relative-opacity
+                animation="property: model-relative-opacity.opacityFactor; from: 0; to: 1; startEvents: model-loaded; dur: 3000"
+                animation__2="property: rotation; to: 0 360 0; loop: true; dur: 3000; easing: linear">
+
+                <a-image src="#walker" visible="false" height="0.75" width="0.5" position="0 1 1.05" rotation="0 0 0">
+                </a-image>
+                <a-image src="#walker" visible="false" height="0.75" width="0.5" position="1.05 1 0" rotation="0 90 0">
+                </a-image>
+                <a-image src="#walker" visible="false" height="0.75" width="0.5" position="0 1 -1.05"
+                    rotation="0 180 0">
+                </a-image>
+                <a-image src="#walker" visible="false" height="0.75" width="0.5" position="-1.05 1 0"
+                    rotation="0 270 0">
+                </a-image>
+                <!-- <a-image animation="property: material.opacity; from: 0; to: 1; dur: 3000; startEvents: mars-loaded;"
+                    src="#walker" opacity="0" height="0.75" width="0.5" position="0 1 1.05" rotation="0 0 0">
+                </a-image>
+                <a-image animation="property: material.opacity; from: 0; to: 1; dur: 3000; startEvents: mars-loaded;"
+                    src="#walker" opacity="0" height="0.75" width="0.5" position="1.05 1 0" rotation="0 90 0">
+                </a-image>
+                <a-image animation="property: material.opacity; from: 0; to: 1; dur: 3000; startEvents: mars-loaded;"
+                    src="#walker" opacity="0" height="0.75" width="0.5" position="0 1 -1.05" rotation="0 180 0">
+                </a-image>
+                <a-image animation="property: material.opacity; from: 0; to: 1; dur: 3000; startEvents: mars-loaded;"
+                    src="#walker" opacity="0" height="0.75" width="0.5" position="-1.05 1 0" rotation="0 270 0">
+                </a-image> -->
             </a-entity>
+
             <!-- draw axis -->
             <a-entity line="start: 0 0 0; end: 5 0 0; color: red" line__2="start: 0 0 0; end: 0 5 0; color: green"
                 line__3="start: 0 0 0; end: 0 0 5; color: blue">
             </a-entity>
-        </a-marker-camera>
+
+        </a-marker>
     </a-scene>
 </body>
