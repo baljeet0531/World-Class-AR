@@ -98,33 +98,40 @@
 
 
             <!-- mars -->
+
             <a-entity marsmodel gltf-model="url(assets/scene.gltf)" scale="0.8 0.8 0.8" position="0 0 0"
                 model-relative-opacity
                 animation="property: model-relative-opacity.opacityFactor; from: 0; to: 1; startEvents: model-loaded; dur: 3000"
-                animation__2="property: rotation; to: 0 360 0; loop: true; dur: 3000; easing: linear">
+                animation__2="property: rotation; to: 0 360 0; loop: true; dur: 6000; easing: linear">
 
-                <a-image src="#walker" visible="false" height="0.75" width="0.5" position="0 1 1.05" rotation="0 0 0">
-                </a-image>
-                <a-image src="#walker" visible="false" height="0.75" width="0.5" position="1.05 1 0" rotation="0 90 0">
-                </a-image>
-                <a-image src="#walker" visible="false" height="0.75" width="0.5" position="0 1 -1.05"
-                    rotation="0 180 0">
-                </a-image>
-                <a-image src="#walker" visible="false" height="0.75" width="0.5" position="-1.05 1 0"
-                    rotation="0 270 0">
-                </a-image>
-                <!-- <a-image animation="property: material.opacity; from: 0; to: 1; dur: 3000; startEvents: mars-loaded;"
-                    src="#walker" opacity="0" height="0.75" width="0.5" position="0 1 1.05" rotation="0 0 0">
-                </a-image>
-                <a-image animation="property: material.opacity; from: 0; to: 1; dur: 3000; startEvents: mars-loaded;"
-                    src="#walker" opacity="0" height="0.75" width="0.5" position="1.05 1 0" rotation="0 90 0">
-                </a-image>
-                <a-image animation="property: material.opacity; from: 0; to: 1; dur: 3000; startEvents: mars-loaded;"
-                    src="#walker" opacity="0" height="0.75" width="0.5" position="0 1 -1.05" rotation="0 180 0">
-                </a-image>
-                <a-image animation="property: material.opacity; from: 0; to: 1; dur: 3000; startEvents: mars-loaded;"
-                    src="#walker" opacity="0" height="0.75" width="0.5" position="-1.05 1 0" rotation="0 270 0">
-                </a-image> -->
+                <a-entity position="0 1.56 0.71">
+                    <!-- <a-entity line="start: 0 0 0; end: 5 0 0; color: purple"
+                        line__2="start: 0 0 0; end: 0 5 0; color: orange"
+                        line__3="start: 0 0 0; end: 0 0 5; color: pink">
+                    </a-entity> -->
+                    <a-image src="#walker" visible="false" height="0.375" width="0.25" position="0 0 0"
+                        rotation="315 0 0">
+                    </a-image>
+                </a-entity>
+
+                <a-entity position="1.01 1 0" rotation="0 90 0">
+                    <a-image src="#walker" visible="false" height="0.375" width="0.25" position="0 0 0"
+                        rotation="0 0 0">
+                    </a-image>
+                </a-entity>
+
+                <a-entity position="0 1.82 -0.2" rotation="0 180 0">
+                    <a-image src="#walker" visible="false" height="0.375" width="0.25" position="0 0 0"
+                        rotation="285 0 0">
+                    </a-image>
+                </a-entity>
+
+                <a-entity position="-0.88 1.3 -0.2" rotation="0 250 0">
+
+                    <a-image src="#walker" visible="false" height="0.375" width="0.25" position="0 0 0"
+                        rotation="330 0 0">
+                    </a-image>
+                </a-entity>
             </a-entity>
 
             <!-- draw axis -->
@@ -134,4 +141,5 @@
 
         </a-marker>
     </a-scene>
+    <div id="blank"></div>
 </body>
