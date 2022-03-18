@@ -11,137 +11,15 @@
 
     <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+    <script src="./animate.js"></script>
 
-    <script>
-        document.documentElement.style.setProperty(
-            '--vh',
-            window.innerHeight * 0.01 + 'px'
-        )
-    </script>
-    <script>
-        AFRAME.registerComponent('model-relative-opacity', {
-            schema: { opacityFactor: { default: 1.0 } },
-            init: function () {
-                this.nodeMap = {}
-                this.prepareMap.bind(this)
-                this.traverseMesh.bind(this)
-
-                this.el.addEventListener('model-loaded', e => {
-                    this.prepareMap()
-                    this.update()
-                });
-            },
-            prepareMap: function () {
-                this.traverseMesh(node => {
-                    this.nodeMap[node.uuid] = node.material.opacity
-                })
-            },
-            update: function () {
-                this.traverseMesh(node => {
-                    node.material.opacity = this.nodeMap[node.uuid] * this.data.opacityFactor
-                    node.material.transparent = node.material.opacity < 1.0; node.material.needsUpdate = true;
-                })
-            }, remove: function () {
-                this.traverseMesh(node => {
-                    node.material.opacity = this.nodeMap[node.uuid]
-                    node.material.transparent = node.material.opacity < 1.0; node.material.needsUpdate = true;
-                })
-            }, traverseMesh:
-                function (func) {
-                    var mesh = this.el.getObject3D('mesh'); if (!mesh) { return; } mesh.traverse(node => {
-                        if (node.isMesh) {
-                            func(node)
-                        }
-                    });
-                }
-        });
-    </script>
-    <script>
-        var loaded = false;
-        var first_markerfound = false;
-
-        AFRAME.registerComponent('markerhandler', {
-            init: function () {
-                let aim = document.querySelector(".aim");
-                var mars = document.querySelector("#mars");
-                var bgmusic = document.querySelector('audio');
-
-                this.el.addEventListener('markerFound', () => {
-                    // alert("marker found!!");
-                    aim.setAttribute('visible', true);
-                    bgmusic.play();
-
-                    if (!first_markerfound) {
-                        first_markerfound = true;
-                    }
-
-                    if (first_markerfound && loaded) {
-                        mars.emit("fadein");
-                    }
-
-                })
-            }
-        });
-    </script>
-    <script>
-        AFRAME.registerComponent('marsmodel', {
-            init: function () {
-                let walker = document.querySelectorAll(".clickable");
-
-                this.el.addEventListener('animationcomplete', () => {
-                    for (i = 0; i < walker.length; i++) {
-                        walker[i].setAttribute('visible', true);
-                        loaded = false;
-                    }
-                })
-
-                this.el.addEventListener('model-loaded', () => {
-                    // alert("loaded!!");
-                    if (!loaded) {
-                        loaded = true;
-                    }
-                    if (loaded && first_markerfound) {
-                        mars.emit("fadein");
-                    }
-                })
-            }
-        });
-    </script>
-    <script>
-        AFRAME.registerComponent('walker', {
-            schema: { index: { default: 0 } },
-            init: function () {
-                let walker_img = document.querySelectorAll("a-image");
-                let img_component = document.querySelectorAll(".img_component");
-                let blank = document.querySelector("#blank");
-                let component_page = document.querySelector("#component-page");
-
-                this.el.addEventListener('click', () => {
-                    // alert(`${this.data.index} Click!!`);
-                    mars.emit("walker-clicked");
-                    walker_img[this.data.index].emit("clicked");
-                    component_page.style.display = "block";
-                    img_component[this.data.index].style.display = "block";
-                })
-
-                blank.addEventListener('click', () => {
-                    mars.emit("blank-clicked");
-                    component_page.style.display = "none";
-                    img_component[this.data.index].style.display = "none";
-
-                })
-            }
-        });
-    </script>
     <title>world class AR</title>
 </head>
-
-
 
 <body style='margin : 0px; overflow: hidden;'>
 
     <a-scene arjs embedded renderer="logarithmicDepthBuffer: true;" vr-mode-ui="enabled: false">
-        <a-entity camera>
+        <a-entity id="camera" camera>
             <a-entity position="0 0 -1" class="aim" visible="false" geometry="primitive: circle; radius: 0.002"
                 material="color: white;" cursor=" fuse: false; rayOrigin:entity;" raycaster="objects: .clickable;">
             </a-entity>
@@ -150,8 +28,8 @@
             <img id="walker" src="assets/walker.png">
         </a-assets>
         <a-marker emitevents="true" markerhandler type='pattern' url='assets/pattern-marker.patt'>
-            <!-- mars -->
 
+            <!-- mars -->
             <a-entity id="mars" class="first-markerfound" marsmodel gltf-model=" url(assets/scene.gltf)"
                 scale="0.8 0.8 0.8" position="0 0 0" model-relative-opacity
                 animation="property: model-relative-opacity.opacityFactor; from: 0; to: 1; startEvents: fadein;  dur: 3000"
@@ -159,7 +37,9 @@
 
                 <a-entity walker="index: 0" class="clickable" geometry="primitive: sphere; radius: 0.25;"
                     material="opacity: 0.0; transparent: true" visible="false" position="0 1.56 0.71">
-                    <!-- <a-entity line="start: 0 0 0; end: 5 0 0; color: purple"
+
+                    <!-- entity local coordinate axis-->
+                    <!--<a-entity line="start: 0 0 0; end: 5 0 0; color: purple"
                         line__2="start: 0 0 0; end: 0 5 0; color: orange"
                         line__3="start: 0 0 0; end: 0 0 5; color: pink">
                     </a-entity> -->
@@ -196,16 +76,30 @@
                 </a-entity>
             </a-entity>
 
-            <!-- draw axis -->
+            <!-- marker coordinate axis -->
             <!-- <a-entity line="start: 0 0 0; end: 5 0 0; color: red" line__2="start: 0 0 0; end: 0 5 0; color: green"
                 line__3="start: 0 0 0; end: 0 0 5; color: blue">
             </a-entity> -->
         </a-marker>
     </a-scene>
+
+    <!-- loading  -->
+    <div class="lds-roller">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+
+
+
     <audio src="assets/Universe__Loop_.mp3" controls autoplay loop>
         <p>If you are reading this, it is because your browser does not support the audio element. </p>
     </audio>
-
 
     <div id="component-page">
         <div id="blank"></div>
@@ -214,8 +108,4 @@
         <img class="img_component" src="assets/pickle.png">
         <img class="img_component" src="assets/olive.png">
     </div>
-
-    <!-- <audio autoplay loop muted>
-        <source src="assets/Universe__Loop_.mp3" type="audio/mpeg">
-    </audio> -->
 </body>
