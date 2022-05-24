@@ -11,11 +11,11 @@
     <meta property="og:image" content="https://upload.wikimedia.org/wikipedia/commons/0/02/OSIRIS_Mars_true_color.jpg">
     <meta property="og:description" content="World Class AR">
 
-    <link href="./style.css" rel="stylesheet" type="text/css">
+    <link href="../style.css" rel="stylesheet" type="text/css">
 
     <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
-    <script src="./animate.js"></script>
+    <script src="../animate.js"></script>
 
     <title>world class AR</title>
 </head>
@@ -29,12 +29,12 @@
             </a-entity>
         </a-entity>
         <a-assets>
-            <img id="walker" src="assets/walker.png">
+            <img id="walker" src="../assets/walker.png">
         </a-assets>
-        <a-marker emitevents="true" markerhandler type='pattern' url='assets/pattern-space.patt'>
+        <a-marker emitevents="true" markerhandler type='pattern' url='../assets/pattern-space.patt'>
 
             <!-- mars -->
-            <a-entity id="mars" class="first-markerfound" gltf-model=" url(assets/scene.gltf)" scale="0.8 0.8 0.8"
+            <a-entity id="mars" class="first-markerfound" gltf-model=" url(../assets/scene.gltf)" scale="0.8 0.8 0.8"
                 position="0 0 0">
             </a-entity>
 
@@ -59,15 +59,15 @@
 
 
 
-    <audio src="assets/Universe__Loop_.mp3" controls loop>
+    <audio src="../assets/Universe__Loop_.mp3" controls loop>
         <p>If you are reading this, it is because your browser does not support the audio element. </p>
     </audio>
 
     <!-- <div id="component-page">
         <div id="blank"></div>
-        <img class="img_component" src="assets/fish_sauce.png">
-        <img class="img_component" src="assets/caviar.png">
-        <img class="img_component" src="assets/pickle.png">
-        <img class="img_component" src="assets/olive.png">
+        <img class="img_component" src="../assets/fish_sauce.png">
+        <img class="img_component" src="../assets/caviar.png">
+        <img class="img_component" src="../assets/pickle.png">
+        <img class="img_component" src="../assets/olive.png">
     </div> -->
 </body>
