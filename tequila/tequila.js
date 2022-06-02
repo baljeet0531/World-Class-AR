@@ -6,7 +6,6 @@ document.documentElement.style.setProperty(
 )
 
 
-
 AFRAME.registerComponent('tequila-model', {
     schema: {
         index: { type: 'int', default: 0 },
@@ -57,12 +56,16 @@ AFRAME.registerComponent('lastmodel', {
     init: function () {
 
         this.el.addEventListener('model-loaded', () => {
+
+
             // alert("loaded!!");
             document.querySelector("a-scene").setAttribute('visible', true);
 
             document.querySelector("#whitebg").style.display = "none";
             document.querySelector(".lds-roller").style.display = "none";
         })
+
+
     }
 });
 
@@ -76,8 +79,6 @@ window.onload = function () {
 
     navigator.mediaDevices.getUserMedia(constraints).
         then((stream) => { video.srcObject = stream });
-
-
 
     let img_component = document.querySelectorAll(".img_component");
     let blank = document.querySelector("#blank");
